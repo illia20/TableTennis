@@ -55,14 +55,10 @@
                 @Html.DisplayFor(modelItem => item.Player2.Name)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Racket1.IdNavigation.Blade.BladeName)<br>
-                @Html.DisplayFor(modelItem => item.Racket1.IdNavigation.Fhrubber.RubberName)<br>
-                @Html.DisplayFor(modelItem => item.Racket1.IdNavigation.Bhrubber.RubberName)
+                @Html.DisplayFor(modelItem => item.Racket1.Id)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Racket2.IdNavigation.Blade.BladeName)<br>
-                @Html.DisplayFor(modelItem => item.Racket2.IdNavigation.Fhrubber.RubberName)<br>
-                @Html.DisplayFor(modelItem => item.Racket2.IdNavigation.Bhrubber.RubberName)
+                @Html.DisplayFor(modelItem => item.Racket2.Id)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
