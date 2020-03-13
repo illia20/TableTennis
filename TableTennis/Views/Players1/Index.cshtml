@@ -1,13 +1,13 @@
 ﻿@model IEnumerable<TableTennis.Player>
 
 @{
-    ViewData["Title"] = "Гравці";
+    ViewData["Title"] = "Index";
 }
 
-<h1>Гравці</h1>
+<h1>Players from @ViewBag.CountryName</h1>
 
 <p>
-    <a asp-action="Create">Додати гравця</a>
+    <a asp-action="Create" asp-route-id="@ViewBag.CountryId">Add new player</a>
 </p>
 <table class="table">
     <thead>
@@ -31,15 +31,14 @@
                 @Html.DisplayFor(modelItem => item.Name)
             </td>
             <td>
-                @(item.Arm? "Right" : "Left")
-               @*  @Html.DisplayFor(modelItem => item.Arm) *@
+                @(item.Arm ? "Right" : "Left")
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Country.CountryName)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Матчі</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
                 <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
             </td>
         </tr>

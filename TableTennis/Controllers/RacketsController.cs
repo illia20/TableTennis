@@ -161,15 +161,7 @@ namespace TableTennis.Controllers
             {
                 var rackets = context.Racket.Include(w => w.PlayerRackets).SingleOrDefault(w => w.Id == id);
                 var child3 = rackets.PlayerRackets;
-                // TODO remove games with this racket
-                foreach(var child4 in child3.GameRacket1.ToList())
-                {
-                    context.Game.Remove(child4);
-                }
-                foreach (var child4 in child3.GameRacket2.ToList())
-                {
-                    context.Game.Remove(child4);
-                }
+                
                 context.PlayerRackets.Remove(child3);
                 context.SaveChanges();
             }

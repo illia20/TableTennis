@@ -40,6 +40,7 @@ namespace TableTennis.Controllers
             }
 
             return View(country);
+            // return RedirectToAction("Index", "Players1", new { id = country.Id, name = country.CountryName });
         }
 
         // GET: Countries/Create
@@ -150,10 +151,8 @@ namespace TableTennis.Controllers
                         var blade = context.Blade.Include(b => b.Racket).SingleOrDefault(b => b.Id == child1.Id);
                         foreach(var child2 in blade.Racket.ToList())
                         {
-                            // TODO remove player rackets?
                             var racket = context.Racket.Include(w => w.PlayerRackets).SingleOrDefault(w => w.Id == child2.Id);
-                            var child3 = racket.PlayerRackets;
-                            context.PlayerRackets.Remove(child3);
+                            
                             context.Racket.Remove(child2);
                         }
                         context.Blade.Remove(child1);
@@ -165,33 +164,14 @@ namespace TableTennis.Controllers
                         foreach (var child2 in rubber1.RacketBhrubber.ToList())
                         {
                             var racket = context.Racket.Include(w => w.PlayerRackets).SingleOrDefault(w => w.Id == child2.Id);
-                            // TODO remove player rackets?
-                            var child3 = racket.PlayerRackets;
-                            foreach (var child4 in child3.GameRacket1.ToList())
-                            {
-                                context.Game.Remove(child4);
-                            }
-                            foreach (var child4 in child3.GameRacket2.ToList())
-                            {
-                                context.Game.Remove(child4);
-                            }
-                            context.PlayerRackets.Remove(child3);
+                            
                             context.Racket.Remove(child2);
                         }
                         var rubber2 = context.Rubber.Include(r => r.RacketFhrubber).SingleOrDefault(r => r.Id == child1.Id);
                         foreach (var child2 in rubber2.RacketFhrubber.ToList())
                         {
                             var racket = context.Racket.Include(w => w.PlayerRackets).SingleOrDefault(w => w.Id == child2.Id);
-                            var child3 = racket.PlayerRackets;
-                            foreach (var child4 in child3.GameRacket1.ToList())
-                            {
-                                context.Game.Remove(child4);
-                            }
-                            foreach (var child4 in child3.GameRacket2.ToList())
-                            {
-                                context.Game.Remove(child4);
-                            }
-                            context.PlayerRackets.Remove(child3);
+                            
                             context.Racket.Remove(child2);
                         }
                         context.Rubber.Remove(child1);
