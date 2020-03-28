@@ -61,12 +61,13 @@ namespace TableTennis.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,FactoryName,CountryId")] Factory factory)
         {
-            if (FactoryExists(factory.FactoryName))
-            {
-                return RedirectToAction(nameof(Index));
-            }
+            
             if (ModelState.IsValid)
             {
+                if (FactoryExists(factory.FactoryName))
+                {
+                    return RedirectToAction(nameof(Index));
+                }
                 _context.Add(factory);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -160,7 +161,6 @@ namespace TableTennis.Controllers
                     var blade = context.Blade.Include(b => b.Racket).SingleOrDefault(b => b.Id == child1.Id);
                     foreach (var child2 in blade.Racket.ToList())
                     {
-
                         var racket = context.Racket.Include(w => w.PlayerRackets).SingleOrDefault(w => w.Id == child2.Id);
                         var child3 = racket.PlayerRackets;
                         context.PlayerRackets.Remove(child3);
@@ -255,14 +255,31 @@ namespace TableTennis.Controllers
                                     newfactory = f[0];
                                 }
                                 else
-                                {
+                                { 
                                     newfactory = new Factory();
                                     newfactory.FactoryName = factoryName;
-                                    Country c = new Country();
-                                    c.CountryName = countryName;
-                                    _context.Country.Add(c);
-                                    newfactory.Country = c;
-                                    _context.Factory.Add(newfactory);
+
+                                    var f1 = await _context.Factory.SingleOrDefaultAsync(e => e.FactoryName == newfactory.FactoryName);
+                                    if (f1 == null) 
+                                    { 
+                                        Country c = new Country();
+                                        c.CountryName = countryName;
+                                        var c1 = await _context.Country.SingleOrDefaultAsync(e => e.CountryName == c.CountryName);
+                                        if (c1 == null)
+                                        {
+                                            _context.Country.Add(c);
+                                        }
+                                        else
+                                        {
+                                            c = c1;
+                                        }
+                                        newfactory.Country = c;
+                                        _context.Factory.Add(newfactory);
+                                    }
+                                    else
+                                    {
+                                        newfactory = f1;
+                                    }
                                 }
                                 foreach (IXLRow row in worksheet.RowsUsed().Skip(1))
                                 {
@@ -274,7 +291,11 @@ namespace TableTennis.Controllers
                                         if (cValue == "1" || cValue == "+") blade.Composite = true;
                                         else blade.Composite = false;
                                         blade.Factory = newfactory;
-                                        _context.Blade.Add(blade);
+                                        var b1 = await _context.Blade.SingleOrDefaultAsync(e => e.BladeName == blade.BladeName);
+                                        if (b1 == null)
+                                        {
+                                            _context.Blade.Add(blade);
+                                        }
                                     }
                                     catch (Exception e)
                                     {
@@ -323,12 +344,29 @@ namespace TableTennis.Controllers
                                 else
                                 {
                                     newfactory = new Factory();
-                                    Country c = new Country();
-                                    c.CountryName = countryName;
                                     newfactory.FactoryName = factoryName;
-                                    _context.Country.Add(c);
-                                    newfactory.Country = c;
-                                    _context.Factory.Add(newfactory);
+
+                                    var f1 = await _context.Factory.SingleOrDefaultAsync(e => e.FactoryName == newfactory.FactoryName);
+                                    if (f1 == null)
+                                    {
+                                        Country c = new Country();
+                                        c.CountryName = countryName;
+                                        var c1 = await _context.Country.SingleOrDefaultAsync(e => e.CountryName == c.CountryName);
+                                        if (c1 == null)
+                                        {
+                                            _context.Country.Add(c);
+                                        }
+                                        else
+                                        {
+                                            c = c1;
+                                        }
+                                        newfactory.Country = c;
+                                        _context.Factory.Add(newfactory);
+                                    }
+                                    else
+                                    {
+                                        newfactory = f1;
+                                    }
                                 }
                                 foreach (IXLRow row in worksheet.RowsUsed().Skip(1))
                                 {
@@ -338,7 +376,11 @@ namespace TableTennis.Controllers
                                         rubber.RubberName = row.Cell(1).Value.ToString();
                                         rubber.Pimples = row.Cell(2).Value.ToString();
                                         rubber.Factory = newfactory;
-                                        _context.Rubber.Add(rubber);
+                                        var r1 = await _context.Rubber.SingleOrDefaultAsync(e => e.RubberName == rubber.RubberName);
+                                        if (r1 == null) 
+                                        {
+                                            _context.Rubber.Add(rubber);
+                                        }
                                     }
                                     catch (Exception e)
                                     {
@@ -373,7 +415,6 @@ namespace TableTennis.Controllers
                         worksheet.Cell(i + 2, 2).Value = blades[i].Composite;
                     }
                 }
-
                 using (var stream = new MemoryStream())
                 {
                     workbook.SaveAs(stream);

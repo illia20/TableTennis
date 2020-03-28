@@ -217,7 +217,7 @@ namespace TableTennis.Controllers
 
             return RedirectToAction(nameof(Index));
         }
-        public bool CountryExists(string _countryname)
+        private bool CountryExists(string _countryname)
         {
             return _context.Country.Any(e => e.CountryName == _countryname);
         }
