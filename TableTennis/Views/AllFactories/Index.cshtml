@@ -9,6 +9,40 @@
 <p>
     <a asp-action="Create">Add a new factory</a>
 </p>
+<div>
+    <h3>Оберіть Excel-файл для завантаження (Rubbers)</h3>
+    @using (Html.BeginForm("ImportRubbers", "AllFactories", FormMethod.Post, new { enctype = "multipart/form-data", id = "frm-excel" }))
+    {
+        <div>
+            Завантажте Excel-файл:
+            <input type="file" name="fileExcel" id="fileExcel" />
+            <div>
+                <input type="submit" value="Завантажити" />
+            </div>
+        </div>
+    }
+</div>
+<div>
+    <h3>Завантаження інформації в файл (Rubbers)</h3>
+    <a asp-action="ExportRubbers">Завантажити</a>
+</div>
+<div>
+    <h3>Оберіть Excel-файл для завантаження (Blades)</h3>
+    @using (Html.BeginForm("ImportBlades", "AllFactories", FormMethod.Post, new { enctype = "multipart/form-data", id = "frm-excel" }))
+    {
+        <div>
+            Завантажте Excel-файл:
+            <input type="file" name="fileExcel" id="fileExcel" />
+            <div>
+                <input type="submit" value="Завантажити" />
+            </div>
+        </div>
+    }
+</div>
+<div>
+    <h3>Завантаження інформації в файл (Blades)</h3>
+    <a asp-action="ExportBlades">Завантажити</a>
+</div>
 <table class="table">
     <thead>
         <tr>
@@ -22,21 +56,22 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.FactoryName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Country.CountryName)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FactoryName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Country.CountryName)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
 
@@ -44,7 +79,7 @@
     <div id="chart1"></div>
 </div>
 
-@section scripts{ 
+@section scripts{
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 
     <script>

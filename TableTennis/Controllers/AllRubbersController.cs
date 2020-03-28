@@ -60,6 +60,10 @@ namespace TableTennis.Controllers
         {
             if (ModelState.IsValid)
             {
+                if(RubberExists(rubber.FactoryId, rubber.RubberName))
+                {
+                    return RedirectToAction(nameof(Index));
+                }
                 _context.Add(rubber);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -173,6 +177,12 @@ namespace TableTennis.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        private bool RubberExists(int fId, string rubberName)
+        {
+            bool rubber1 = _context.Rubber.Any(e => e.RubberName == rubberName);
+            bool factory1 = _context.Rubber.Any(e => e.FactoryId == fId);
+            return factory1 && rubber1;
+        }
         private bool RubberExists(int id)
         {
             return _context.Rubber.Any(e => e.Id == id);

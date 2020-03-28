@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using ClosedXML.Excel;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -58,6 +61,10 @@ namespace TableTennis.Controllers
         {
             if (ModelState.IsValid)
             {
+                if (CountryExists(country.CountryName))
+                {
+                    return RedirectToAction(nameof(Index));
+                }
                 _context.Add(country);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -139,20 +146,20 @@ namespace TableTennis.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            
+
             using (var context = new TableTennisDBContext())
             {
                 var country1 = context.Country.Include(c => c.Factory).SingleOrDefault(c => c.Id == id);
-                foreach(var child in country1.Factory.ToList())
+                foreach (var child in country1.Factory.ToList())
                 {
                     var factory1 = context.Factory.Include(f => f.Blade).SingleOrDefault(f => f.Id == child.Id);
-                    foreach(var child1 in factory1.Blade.ToList())
+                    foreach (var child1 in factory1.Blade.ToList())
                     {
                         var blade = context.Blade.Include(b => b.Racket).SingleOrDefault(b => b.Id == child1.Id);
-                        foreach(var child2 in blade.Racket.ToList())
+                        foreach (var child2 in blade.Racket.ToList())
                         {
                             var racket = context.Racket.Include(w => w.PlayerRackets).SingleOrDefault(w => w.Id == child2.Id);
-                            
+
                             context.Racket.Remove(child2);
                         }
                         context.Blade.Remove(child1);
@@ -164,14 +171,14 @@ namespace TableTennis.Controllers
                         foreach (var child2 in rubber1.RacketBhrubber.ToList())
                         {
                             var racket = context.Racket.Include(w => w.PlayerRackets).SingleOrDefault(w => w.Id == child2.Id);
-                            
+
                             context.Racket.Remove(child2);
                         }
                         var rubber2 = context.Rubber.Include(r => r.RacketFhrubber).SingleOrDefault(r => r.Id == child1.Id);
                         foreach (var child2 in rubber2.RacketFhrubber.ToList())
                         {
                             var racket = context.Racket.Include(w => w.PlayerRackets).SingleOrDefault(w => w.Id == child2.Id);
-                            
+
                             context.Racket.Remove(child2);
                         }
                         context.Rubber.Remove(child1);
@@ -182,7 +189,7 @@ namespace TableTennis.Controllers
                 foreach (var child in country2.Player.ToList())
                 {
                     var player2 = context.Player.Include(q => q.GamePlayer2).SingleOrDefault(q => q.Id == child.Id);
-                    foreach(var child1 in player2.GamePlayer2.ToList())
+                    foreach (var child1 in player2.GamePlayer2.ToList())
                     {
                         context.Game.Remove(child1);
                     }
@@ -192,7 +199,7 @@ namespace TableTennis.Controllers
                         context.Game.Remove(child1);
                     }
                     var player3 = context.Player.Include(q => q.PlayerRackets).SingleOrDefault(q => q.Id == child.Id);
-                    foreach(var child1 in player3.PlayerRackets.ToList())
+                    foreach (var child1 in player3.PlayerRackets.ToList())
                     {
                         context.PlayerRackets.Remove(child1);
                     }
@@ -210,10 +217,14 @@ namespace TableTennis.Controllers
 
             return RedirectToAction(nameof(Index));
         }
-
+        public bool CountryExists(string _countryname)
+        {
+            return _context.Country.Any(e => e.CountryName == _countryname);
+        }
         private bool CountryExists(int id)
         {
             return _context.Country.Any(e => e.Id == id);
         }
+
     }
 }

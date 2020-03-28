@@ -60,6 +60,10 @@ namespace TableTennis.Controllers
         {
             if (ModelState.IsValid)
             {
+                if (BladeExists(blade.BladeName))
+                {
+                    return RedirectToAction(nameof(Index));
+                }
                 _context.Add(blade);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -163,7 +167,10 @@ namespace TableTennis.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
-
+        private bool BladeExists(string bladeName)
+        {
+            return _context.Blade.Any(e => e.BladeName == bladeName);
+        }
         private bool BladeExists(int id)
         {
             return _context.Blade.Any(e => e.Id == id);
